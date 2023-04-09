@@ -1,14 +1,13 @@
-import React, { useState, useEffect, createContext } from "react";
-import { Spinner } from "reactstrap";
+import React, { useState, createContext } from "react";
+
 
 export const UserProfileContext = createContext();
 
 export function UserProfileProvider(props) {
-  const [userProfile, setUserProfile] = useState(
-    localStorage.getItem("userProfile")
+  const [userId, setUserId] = useState(
+    sessionStorage.getItem("userId")
   );
-  const [isLoggedIn, setIsLoggedIn] = useState(userProfile != null);
-  const [userId, setUserId] = useState();
+  const [isLoggedIn, setIsLoggedIn] = useState(userId != null);
 
   const APIKEY = `Token ${process.env.REACT_APP_SUGGESTIC_API_KEY}`;
 
@@ -27,16 +26,14 @@ export function UserProfileProvider(props) {
     })
       .then((res) => res.json())
       .then((data) => {
-        debugger;
-        localStorage.setItem("userProfile", data["name"]);
+        sessionStorage.setItem("userId", data["user_id"]);
         setIsLoggedIn(true);
-        setUserId(data["user_id"]);
       })
       .catch((error) => console.log("error", error));
   };
 
   const logout = () => {
-    localStorage.clear();
+    sessionStorage.clear();
     setIsLoggedIn(false);
   };
 
@@ -54,10 +51,8 @@ export function UserProfileProvider(props) {
     })
       .then((res) => res.json())
       .then((data) => {
-        debugger;
-        localStorage.setItem("userProfile", name);
+        sessionStorage.setItem("userId", data["user_id"]);
         setIsLoggedIn(true);
-        setUserId(data["user_id"]);
       })
       .catch((error) => console.log("error", error));
   };
@@ -92,8 +87,8 @@ export function UserProfileProvider(props) {
   return (
     <UserProfileContext.Provider
       value={{
-        userProfile,
-        setUserProfile,
+        userId,
+        setUserId,
         isLoggedIn,
         setIsLoggedIn,
         login,
